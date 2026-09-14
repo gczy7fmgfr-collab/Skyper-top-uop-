@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skyper Top UP - MLBB</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #0b132b; color: #fff; margin: 0; padding: 20px 10px; display: flex; justify-content: center; }
+    
+    .card { 
+      background: linear-gradient(145deg, #1c2541, #0b132b); 
+      border: 1px solid #3a506b; 
+      border-radius: 16px; 
+      padding: 24px; 
+      max-width: 420px; 
+      width: 100%; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+    }
+    
+    .header { text-align: center; margin-bottom: 20px; }
+    .welcome-badge { 
+      display: inline-block;
+      background: rgba(255, 209, 102, 0.15);
+      color: #ffd166; 
+      font-size: 14px; 
+      font-weight: bold; 
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 209, 102, 0.3);
+      margin-bottom: 15px;
+    }
+    .header h2 { color: #48cae4; margin: 0; font-size: 26px; text-shadow: 0 0 10px rgba(72, 202, 228, 0.4); }
+    
+    .form-group { margin-bottom: 15px; text-align: left; }
+    label { font-size: 14px; color: #90e0ef; display: block; margin-bottom: 5px; font-weight: bold; }
+    
+    .input-box { display: flex; gap: 8px; }
+    input { 
+      width: 100%; 
+      padding: 12px; 
+      border-radius: 8px; 
+      border: 1px solid #3a506b; 
+      background: #1c2541; 
+      color: #fff; 
+      font-size: 15px; 
+      outline: none; 
+      transition: 0.3s;
+    }
+    input:focus { border-color: #00b4d8; box-shadow: 0 0 8px rgba(0,180,216,0.5); }
+    
+    .pkg-title { text-align: left; color: #90e0ef; font-size: 14px; font-weight: bold; margin: 15px 0 10px; }
+    
+    .pkg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .pkg-item { 
+      background: #1c2541; 
+      border: 2px solid #3a506b; 
+      border-radius: 12px; 
+      padding: 14px 10px; 
+      text-align: center; 
+      cursor: pointer; 
+      transition: 0.2s;
+    }
+    .pkg-item:hover { border-color: #00b4d8; }
+    .pkg-item.active { border-color: #00b4d8; background: #0077b6; box-shadow: 0 0 12px rgba(0,180,216,0.5); }
+    .pkg-item .diamond-icon { font-size: 28px; display: block; margin-bottom: 5px; }
+    .pkg-item .dm { font-size: 14px; font-weight: bold; display: block; color: #fff; }
+    .pkg-item .price { font-size: 13px; color: #ffd166; font-weight: bold; margin-top: 3px; display: block; }
+    
+    .btn-submit { 
+      width: 100%; 
+      background: linear-gradient(90deg, #ef476f, #ff0054); 
+      color: #fff; 
+      border: none; 
+      padding: 14px; 
+      border-radius: 10px; 
+      font-size: 16px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      box-shadow: 0 4px 15px rgba(239,71,111,0.4);
+      transition: 0.2s;
+      margin-top: 5px;
+    }
+    .btn-submit:hover { opacity: 0.9; }
+
+    /* Modal Styling */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 100; 
+      left: 0; top: 0; width: 100%; height: 100%; 
+      background-color: rgba(0,0,0,0.85); 
+      justify-content: center; align-items: center;
+      padding: 15px;
+    }
+    .modal-content {
+      background: #1c2541;
+      border: 1px solid #3a506b;
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+    .modal-content h3 { color: #48cae4; margin-top: 0; margin-bottom: 8px; font-size: 20px; }
+    .modal-content p { color: #ffd166; font-weight: bold; font-size: 14px; margin: 5px 0; }
+    
+    .qr-container { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      background: #fff; 
+      padding: 10px; 
+      border-radius: 10px; 
+      margin: 10px auto; 
+      width: fit-content;
+      border: 3px solid #fff;
+    }
+    
+    .qr-container img {
+      width: 170px;
+      height: 170px;
+      object-fit: contain;
+      display: block;
+    }
+    
+    .instruction-box {
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px dashed #00b4d8;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #90e0ef;
+      margin: 8px 0;
+      text-align: left;
+    }
+
+    .btn-telegram {
+      display: block;
+      background: linear-gradient(90deg, #0088cc, #229ed9);
+      color: #fff;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,136,204,0.4);
+    }
+
+    .btn-close {
+      background: #ef476f; color: #fff; border: none; padding: 10px;
+      border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 8px; width: 100%;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="welcome-badge">✨ បញ្ចូលពេជ្យហ្គេមដោយសុវត្ថិភាព 24ម៉ោង 🙏🏼</div>
+    <h2>Skyper Top UP</h2>
+  </div>
+
+  <div class="form-group">
+    <label>បញ្ចូលព័ត៌មានគណនី (ID & Zone)</label>
+    <div class="input-box">
+      <input type="number" id="userId" placeholder="User ID">
+      <input type="number" id="zoneId" placeholder="Zone ID" style="width: 45%;">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>ឈ្មោះក្នុងហ្គេម (In-Game Name)</label>
+    <input type="text" id="inGameName" placeholder="ឈ្មោះក្នុងហ្គេមរបស់អ្នក">
+  </div>
+
+  <div class="pkg-title">💎 ជ្រើសរើសកញ្ចប់ពេជ្រ ៖</div>
+
+  <div class="pkg-grid">
+    <div class="pkg-item active" onclick="selectPackage(this, '1.50', '86 Diamonds')">
+      <span class="diamond-icon">💎</span>
+      <span class="dm">86 Diamonds</span>
+      <span class="price">$1.50</span>
+    </div>
+    <div class="pkg-item" onclick="selectPackage(this, '3.00', '172 Diamonds')">
+      <span class="diamond-icon">💎</span>
+      <span class="dm">172 Diamonds</span>
+      <span class="price">$3.00</span>
+    </div>
+    <div class="pkg-item" onclick="selectPackage(this, '3.50', 'Weekly Pass')">
+      <span class="diamond-icon">🛡️</span>
+      <span class="dm">Weekly Pass</span>
+      <span class="price">$3.50</span>
+    </div>
+    <div class="pkg-item" onclick="selectPackage(this, '4.50', '257 Diamonds')">
+      <span class="diamond-icon">💎</span>
+      <span class="dm">257 Diamonds</span>
+      <span class="price">$4.50</span>
+    </div>
+  </div>
+
+  <button class="btn-submit" onclick="submitOrder()">ស្កែនទូទាត់ប្រាក់ (KHQR)</button>
+</div>
+
+<!-- Modal -->
+<div id="qrModal" class="modal">
+  <div class="modal-content">
+    <h3>KHQR Payment</h3>
+    <p id="modalPkgInfo">កញ្ចប់៖ 86 Diamonds</p>
+    <p id="modalUserInfo" style="color: #90e0ef; font-size: 13px;"></p>
+    <p id="modalPrice" style="color: #52b788; font-size: 17px;"></p>
+    
+    <!-- QR Code របស់អ្នកត្រូវបានដូរដាក់រួចរាល់ -->
+    <div class="qr-container">
+      <img src="https://i.ibb.co/zTrF0j8R/qr.jpg" alt="KHQR Code">
+    </div>
+    
+    <div class="instruction-box">
+      <b>ជំហានទី២៖</b> ស្កែនបង់ប្រាក់រួច ចុចប៊ូតុង Telegram ខាងក្រោមដើម្បីផ្ញើការកម្មង់មកកាន់ admin!
+    </div>
+    
+    <a id="telegramLink" href="#" target="_blank" class="btn-telegram">✈️ បង់ប្រាក់រួច ផ្ញើការកម្មង់ទៅ Telegram</a>
+    <button class="btn-close" onclick="closeModal()">បិទវិញ (Close)</button>
+  </div>
+</div>
+
+<script>
+var selectedPrice = "1.50";
+var selectedPkgName = "86 Diamonds";
+
+function selectPackage(element, price, pkgName) {
+  document.querySelectorAll('.pkg-item').forEach(item => item.classList.remove('active'));
+  element.classList.add('active');
+  selectedPrice = price;
+  selectedPkgName = pkgName;
+}
+
+function submitOrder() {
+  var uId = document.getElementById('userId').value.trim();
+  var zId = document.getElementById('zoneId').value.trim();
+  var gName = document.getElementById('inGameName').value.trim();
+
+  if(!uId || !zId) {
+    alert("សូមបញ្ចូល User ID និង Zone ID ឱ្យបានត្រឹមត្រូវ!");
+    return;
+  }
+
+  if(!gName) {
+    alert("សូមបញ្ចូលឈ្មោះក្នុងហ្គេមរបស់អ្នក!");
+    return;
+  }
+
+  document.getElementById('modalPkgInfo').innerText = "កញ្ចប់៖ " + selectedPkgName;
+  document.getElementById('modalUserInfo').innerText = "ID: " + uId + " (" + zId + ") | ឈ្មោះ: " + gName;
+  document.getElementById('modalPrice').innerText = "តម្លៃត្រូវបង់៖ $" + selectedPrice;
+
+  var message = "ជំរាបសួរ Admin! ខ្ញុំបានទូទាត់ប្រាក់ទិញពេជ្ររួចហើយ:\n\n" +
+                "📦 កញ្ចប់: " + selectedPkgName + " ($" + selectedPrice + ")\n" +
+                "👤 ឈ្មោះក្នុងហ្គេម: " + gName + "\n" +
+                "🆔 User ID: " + uId + "\n" +
+                "🌐 Zone ID: " + zId + "\n\n" +
+                "សូមជួយឆែកនិងបញ្ចូលពេជ្រឱ្យខ្ញុំផង (មានភ្ជាប់វិក្កយបត្រជាមួយ)";
+  
+  document.getElementById('telegramLink').href = "https://t.me/sky_skyper?text=" + encodeURIComponent(message);
+  document.getElementById('qrModal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('qrModal').style.display = 'none';
+}
+</script>
+
+</body>
+</html>
