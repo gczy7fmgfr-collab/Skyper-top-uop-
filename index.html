@@ -1,0 +1,54 @@
+const express = require('express');
+const axios = require('axios');
+const app = express();
+
+app.use(express.json());
+
+// ទីតាំងសម្រាប់ទទួលសំណើទិញពេជ្រពីវេបសាយរបស់អ្នក
+app.post('/api/topup', async (req, res) => {
+    try {
+        const { userId, zoneId, productId } = req.body;
+
+        // ត្រួតពិនិត្យទិន្នន័យដែលអតិថិជនបានបញ្ចូល
+        if (!userId || !zoneId || !productId) {
+            return res.status(400).json({ success: false, message: 'សូមបញ្ចូលទិន្នន័យឱ្យបានគ្រប់គ្រាន់!' });
+        }
+
+        // ព័ត៌មានសម្ងាត់សម្រាប់ភ្ជាប់ជាមួយ API Provider (ទុករັກ្សាទុកក្នុង Server មិនឱ្យអតិថិជនឃើញ)
+        const apiKey = 'YOUR_API_KEY_FROM_PROVIDER';
+        const apiEndpoint = 'https://api.provider-example.com/v1/topup';
+
+        // ផ្ញើសំណើទៅកាន់ Server របស់ក្រុមហ៊ុនផ្គត់ផ្គង់ពេជ្រ
+        const apiResponse = await axios.post(apiEndpoint, {
+            user_id: userId,
+            zone_id: zoneId,
+            product_code: productId,
+            key: apiKey
+        });
+
+        // ពិនិត្យមើលលទ្ធផលពី Provider
+        if (apiResponse.data.status === 'success') {
+            return res.json({ 
+                success: true, 
+                message: 'បញ្ចូលពេជ្រជូនអតិថិជនបានដោយជោគជ័យ!',
+                data: apiResponse.data 
+            });
+        } else {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'ការបញ្ចូលពេជ្របរាជ័យពីប្រព័ន្ធ Provider',
+                error: apiResponse.data 
+            });
+        }
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'មានបញ្ហាក្នុងប្រព័ន្ធ Server ខាងក្នុង!' });
+    }
+});
+
+// ចាប់ផ្តើមដំណើរការ Server នៅលើ Port 3000
+const PORT = process.0 || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
